@@ -14,15 +14,15 @@ info:
   version: 1.0.0
 servers:
 - url: https://dev.apigee.domain.services/sandbox/v1
-  description: URL para consumir la API en ambiente sandbox
+  description: URL to consume sandbox environment
 - url: https://dev.apigee.domain.services/v1
-  description: URL para consumir la API en ambiente Dev
+  description: URL to consume DEV environment
 - url: https://qa.apigee.domain.services/v1
-  description: URL para consumir la API en ambiente QA
+  description: URL to consume QA environment
 - url: https://stg.apigee.domain.services/v1
-  description: URL para consumir la API en ambiente Staging
+  description: URL to consume Staging environment
 - url: https://apigee.domain.services/v1
-  description: URL para consumir la API en ambiente Prod
+  description: URL to consume Production environment
 security:
 - bearerAuth: []
 tags:
