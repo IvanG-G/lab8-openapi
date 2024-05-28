@@ -1,0 +1,390 @@
+openapi: 3.0.1
+info:
+  title: API Transversal
+  description: |
+    Restful API for user management, order processing and customer service
+
+    The servers are the links below:
+
+    **Sandbox**: https://dev.apigee.domain.services/sandbox/v1 <br>
+    **Dev**: https://dev.apigee.domain.services/v1 <br>
+    **QA**: https://qa.apigee.domain.services/v1 <br>
+    **Staging**: https://stg.apigee.domain.services/v1 <br>
+    **Prod**: https://apigee.domain.services/v1
+  version: 1.0.0
+servers:
+- url: https://dev.apigee.domain.services/sandbox/v1
+  description: URL para consumir la API en ambiente sandbox
+- url: https://dev.apigee.domain.services/v1
+  description: URL para consumir la API en ambiente Dev
+- url: https://qa.apigee.domain.services/v1
+  description: URL para consumir la API en ambiente QA
+- url: https://stg.apigee.domain.services/v1
+  description: URL para consumir la API en ambiente Staging
+- url: https://apigee.domain.services/v1
+  description: URL para consumir la API en ambiente Prod
+security:
+- bearerAuth: []
+tags:
+- name: User
+  description: Operations related to users management.
+- name: Order
+  description: Operations related to order processing.
+- name: Customer
+  description: Operations related to customer service interactions.
+paths:
+  /users:
+    get:
+      tags:
+      - User
+      summary: |
+        Obtain list of users
+      description: Operation that allows to obtain list of users
+      parameters:
+      - name: userId
+        in: query
+        description: |
+          **ID of the user** which you want to filter.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: |
+          **User type** you want to filter.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+            - active
+            - inactive
+      responses:
+        "200":
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListUsersResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - bearerAuth: []
+  /users/{userId}:
+    put:
+      tags:
+      - User
+      summary: |
+        Obtain list of users
+      description: Operation that allows to obtain list of users
+      parameters:
+      - name: userId
+        in: path
+        description: |
+          **ID of the user** which you want to filter.
+        required: true
+        style: simple
+        explode: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: |
+          **User type** you want to change status.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+            - active
+            - inactive
+      responses:
+        "200":
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - bearerAuth: []  
+  /order/{orderId}:
+    post:
+      tags:
+      - Order
+      summary: |
+        Create Orders
+      description: Operation that allows to create a new Order
+      parameters:
+      - name: orderId
+        in: path
+        description: Order ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - bearerAuth: []
+  /order:
+    get:
+      tags:
+      - Order
+      summary: |
+        Obtain orders.
+      description: Operation that allows to obtain orders
+      parameters:
+      - name: orderId
+        in: query
+        description: |
+          **Order ID** which you want to filter.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Order response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - bearerAuth: []
+  /customer:
+    delete:
+      tags:
+      - Customer
+      summary: |
+        Delete customer contact.
+      description: Operation that allows delete customer
+      parameters:
+      - name: customerId
+        in: query
+        description: |
+          **Customer ID** which you want to delete.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Order response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - bearerAuth: []
+  /customer/{customerId}:
+    put:
+      tags:
+      - Customer
+      summary: |
+        Update customer contact.
+      description: Operation that allows update customer
+      parameters:
+      - name: customerId
+        in: query
+        description: |
+          **Customer ID** which you want to update.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      requestBody:
+        description: customer information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequest'
+      responses:
+        "200":
+          description: Order response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - bearerAuth: []
+components:
+  schemas:
+    ListUsersResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status users response.
+          example: success
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/Users'
+    OrderResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status order response
+          example: success
+        order:
+          type: array
+          items:
+            $ref: '#/components/schemas/Orders'
+    CustomerRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Customer ID**
+          example: 5e20942257f73e79499ejhja
+        contact:
+          type: string
+          description: contactType
+          example:
+            $ref: '#/components/schemas/ContactType'
+    ContactType:
+      properties:
+        email:
+          type: string
+          description: email
+          example: email.email@email.email
+        phone:
+          type: string
+          description: phone
+          example: 5212312312
+    Users:
+      type: object
+      properties:
+        id:
+          type: string
+          description: User ID
+          example: 5e20942257f73e79499e36ae
+        name:
+          type: string
+          description: User name.
+          example: given_name
+        type:
+          type: string
+          description: User type
+          example: active
+    Orders:
+      type: object
+      properties:
+        id:
+          type: string
+          description: order ID
+          example: 5e20942257f73e79499ejhja
+        date:
+          type: string
+          description: date.
+          example: 2024-12-30
+        type:
+          type: string
+          description: order type
+          example: xpress
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        error:
+          $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      properties:
+        type:
+          type: string
+        status_code:
+          type: integer
+        message:
+          type: string
+        user_message:
+          type: string
+        code:
+          type: string
+        trace_id:
+          type: string
+        digital_trace_id:
+          type: string
+    SuccessResponse:
+      type: object
+      properties:
+        status_code:
+          type: integer
+        message:
+          type: string
+        code:
+          type: string
+  responses:
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Success:
+      description: Operation completed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SuccessResponse'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
